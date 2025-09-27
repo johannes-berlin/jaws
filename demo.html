@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAWS - Demo</title>
+    <style>
+        /* Basic demo styles */
+        body {
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .demo-notice {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            z-index: 10000;
+        }
+        
+        .demo-notice a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-notice">
+        <strong>Demo:</strong> Dies ist eine Demo-Seite für das JAWS JavaScript-Modul. 
+        <a href="https://github.com/johannes-berlin/jaws" target="_blank">GitHub Repository</a>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav" style="position: fixed; top: 50px; right: 20px; z-index: 1000;">
+        <button class="menu-toggle" aria-expanded="false" style="background: none; border: none; cursor: pointer; padding: 10px; display: flex; flex-direction: column; gap: 4px;">
+            <span class="hamburger-line" style="width: 25px; height: 2px; background: #fff; transition: all 0.3s ease;"></span>
+            <span class="hamburger-line" style="width: 25px; height: 2px; background: #fff; transition: all 0.3s ease;"></span>
+            <span class="hamburger-line" style="width: 25px; height: 2px; background: #fff; transition: all 0.3s ease;"></span>
+        </button>
+    </nav>
+
+    <!-- Menu Overlay -->
+    <div class="menu_new" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #111; z-index: 999; display: flex; align-items: center; justify-content: center;">
+        <div class="menu_links_wrap" style="display: flex; flex-direction: column; gap: 30px; text-align: center;">
+            <a href="#" class="menu_link" style="color: #fff; text-decoration: none; font-size: 2rem; font-weight: 300;">Home</a>
+            <a href="#" class="menu_link" style="color: #fff; text-decoration: none; font-size: 2rem; font-weight: 300;">About</a>
+            <a href="#" class="menu_link" style="color: #fff; text-decoration: none; font-size: 2rem; font-weight: 300;">Work</a>
+            <a href="#" class="menu_link" style="color: #fff; text-decoration: none; font-size: 2rem; font-weight: 300;">Contact</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="page_main" style="position: relative; z-index: 1; margin-top: 50px;">
+        <!-- Header Section -->
+        <header class="header" style="height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; background: #000;">
+            <h1 style="font-size: 8rem; font-weight: 900; text-align: center; z-index: 2; position: relative;">JAWS</h1>
+            <div class="video-wrapper" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);">
+                <video autoplay muted loop style="width: 100%; height: 100%; object-fit: cover;">
+                    <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4">
+                </video>
+            </div>
+        </header>
+
+        <!-- Directors Section -->
+        <section class="directors-section" style="padding: 100px 0; background: #111;">
+            <div class="director-item" style="position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 50px;">
+                <div class="director-name">
+                    <h2 style="font-size: 4rem; font-weight: 300; text-align: center; z-index: 2; position: relative;">Director One</h2>
+                </div>
+                <div class="director-preview" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%); pointer-events: none;">
+                    <video style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.5);">
+                        <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+            <div class="director-item" style="position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 50px;">
+                <div class="director-name">
+                    <h2 style="font-size: 4rem; font-weight: 300; text-align: center; z-index: 2; position: relative;">Director Two</h2>
+                </div>
+                <div class="director-preview" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%); pointer-events: none;">
+                    <video style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.5);">
+                        <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_5mb.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </section>
+
+        <!-- Scroll Effect Section -->
+        <section class="mwg_effect037" style="background: #000; position: relative;">
+            <div class="pin-height" style="height: 400vh; position: relative;">
+                <div class="container" style="position: sticky; top: 0; height: 100vh; display: flex; align-items: center; justify-content: center;">
+                    <div class="hidden" style="position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; mask-image: linear-gradient(transparent -25%, #000 0%, #000 100%);">
+                        <div class="media" style="width: 80%; height: 80%; overflow: hidden; border-radius: 10px;">
+                            <img src="https://picsum.photos/800/600?random=1" alt="Image 1" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                    </div>
+                    <div class="hidden" style="position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; mask-image: linear-gradient(transparent -25%, #000 0%, #000 100%);">
+                        <div class="media" style="width: 80%; height: 80%; overflow: hidden; border-radius: 10px;">
+                            <img src="https://picsum.photos/800/600?random=2" alt="Image 2" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Additional Content -->
+        <section class="content-section" style="padding: 100px 20px; text-align: center; background: #111;">
+            <h2 style="font-size: 3rem; margin-bottom: 20px;">Scroll down to see more effects</h2>
+            <p style="font-size: 1.2rem; color: #888; max-width: 600px; margin: 0 auto;">This is a demonstration of various GSAP animations and effects.</p>
+        </section>
+    </main>
+
+    <!-- CSS Variables -->
+    <style>
+        :root {
+            --tone-500: #888;
+        }
+    </style>
+
+    <!-- Load the JavaScript module -->
+    <script type="module" src="./main.js"></script>
+</body>
+</html>
