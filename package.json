@@ -1,0 +1,29 @@
+{
+  "name": "jaws-interactive-experience",
+  "version": "1.0.0",
+  "description": "Interactive website with GSAP animations and smooth scrolling effects",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "build": "echo 'No build process needed for static site'",
+    "dev": "npx serve . -l 3000"
+  },
+  "keywords": [
+    "gsap",
+    "animation",
+    "interactive",
+    "website",
+    "scroll",
+    "effects"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/jaws-interactive-experience.git"
+  },
+  "homepage": "https://yourusername.github.io/jaws-interactive-experience"
+}
