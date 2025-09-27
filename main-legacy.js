@@ -612,6 +612,174 @@
     }
   }
 
+  // Barba Transitions Integration
+  function initBarbaTransitions() {
+    if (typeof barba === 'undefined') {
+      console.warn('Barba.js not loaded, skipping page transitions');
+      return;
+    }
+
+    /* ========= Helfer ========= */
+    function runScriptsIn(container) {
+      // Alle <script>-Tags im neuen Container erneut ausführen (auch inline)
+      $(container)
+        .find("script")
+        .not('[type="application/json"]')
+        .each(function () {
+          const s = document.createElement("script");
+          if (this.src) s.src = this.src;
+          if (this.type) s.type = this.type;
+          s.text = this.textContent;
+          document.body.appendChild(s).remove();
+        });
+    }
+
+    /* ========= Webflow/GSAP Reset ========= */
+    function reinitAfterSwap(data) {
+      // 1) Neues data-wf-page übernehmen (wichtig für IX2)
+      const dom = $(new DOMParser().parseFromString(data.next.html, "text/html"));
+      const nextHtml = dom.find("html");
+      if (nextHtml.length) $("html").attr("data-wf-page", nextHtml.attr("data-wf-page"));
+
+      // 2) Webflow sauber neu initialisieren
+      if (window.Webflow) {
+        try { window.Webflow.destroy(); } catch (e) {}
+        // Basis-Ready
+        try { window.Webflow.ready(); } catch (e) {}
+
+        // Core-Module erneut "ready" schalten (falls genutzt)
+        const modules = ["ix2", "dropdown", "slider", "tabs", "lightbox", "navbar", "forms"];
+        modules.forEach((m) => { try { window.Webflow.require(m).ready(); } catch (e) {} });
+
+        // Interactions 2.0 hart neu initialisieren
+        try { window.Webflow.require("ix2").init(); } catch (e) {}
+      }
+
+      // 3) Inline-Skripte aus dem neuen Container erneut laufen lassen
+      runScriptsIn(data.next.container);
+
+      // 4) Aktiven Nav-Link neu setzen
+      $(".w--current").removeClass("w--current");
+      $("a").each(function () {
+        if ($(this).attr("href") === window.location.pathname) $(this).addClass("w--current");
+      });
+
+      // 5) GSAP / ScrollTrigger säubern & refreshen
+      if (window.ScrollTrigger) {
+        try {
+          // Sicherheitshalber alte Trigger killen (falls page-spezifisch)
+          ScrollTrigger.getAll().forEach((t) => t.kill());
+        } catch (e) {}
+      }
+
+      // Ein kleines "Layout-Nudge", dann Refresh (zwei Frames später, damit DOM stabil ist)
+      requestAnimationFrame(() => {
+        window.dispatchEvent(new Event("resize"));
+        requestAnimationFrame(() => {
+          if (window.ScrollTrigger) { try { ScrollTrigger.refresh(true); } catch (e) {} }
+          
+          // Re-initialize all JAWS animations after ScrollTrigger refresh
+          setTimeout(() => {
+            console.log('JAWS: Re-initializing animations after page transition...');
+            initMenuAnimations();
+            initDirectorsHover();
+            initScrollEffects();
+            initHeaderAnimations();
+            initLenis();
+            console.log('JAWS: Animations re-initialized successfully!');
+          }, 100);
+        });
+      });
+    }
+
+    /* ========= Barba Hooks ========= */
+    barba.hooks.enter((data) => {
+      gsap.set(data.next.container, { position: "fixed", top: 0, left: 0, width: "100%" });
+    });
+
+    barba.hooks.leave((data) => {
+      // Alte ScrollTriggers vor dem Wechsel aufräumen
+      if (window.ScrollTrigger) {
+        try { ScrollTrigger.getAll().forEach((t) => t.kill()); } catch (e) {}
+      }
+    });
+
+    barba.hooks.after((data) => {
+      gsap.set(data.next.container, { position: "relative" });
+      $(window).scrollTop(0);
+      reinitAfterSwap(data);
+    });
+
+    /* ========= Selektoren für Transition ========= */
+    const TRANSITION_SEL = ".transition";
+    const BG_SEL = ".transition_bg";
+    const TEXTS_SEL = ".transition_contain [data-trans-text]";
+
+    /* ========= Barba Init: BG-Wipe + Text-Reveal ========= */
+    barba.init({
+      preventRunning: true,
+      transitions: [
+        {
+          name: "clip-sweep-with-text",
+          sync: false, // erst leave komplett, dann enter
+
+          async leave(data) {
+            const done = this.async();
+            const tl = gsap.timeline({ defaults: { ease: "power2.inOut" } });
+
+            tl.set(TRANSITION_SEL, { autoAlpha: 1, pointerEvents: "auto" });
+
+            tl.set(BG_SEL, { "--t": "0%", "--b": "100%" });
+            tl.set(TEXTS_SEL, { yPercent: 100, opacity: 0 });
+
+            tl.to(BG_SEL, { duration: 0.7, "--b": "0%" });
+
+            tl.to(
+              TEXTS_SEL,
+              {
+                duration: 0.6,
+                yPercent: 0,
+                opacity: 1,
+                ease: "power3.out",
+                stagger: 0.08
+              },
+              "+=0.06"
+            );
+
+            tl.to(data.current.container, { duration: 0.5, opacity: 0, scale: 0.98 }, 0);
+
+            tl.add(done);
+          },
+
+          enter(data) {
+            const tl = gsap.timeline({ defaults: { ease: "power2.inOut" } });
+
+            tl.set(data.next.container, { opacity: 1 });
+
+            tl.to(TEXTS_SEL, {
+              duration: 0.35,
+              yPercent: -100,
+              opacity: 0,
+              ease: "power2.in",
+              stagger: { each: 0.06, from: "end" }
+            });
+
+            tl.set(BG_SEL, { "--t": "0%", "--b": "0%" });
+            tl.to(BG_SEL, { duration: 0.65, "--t": "100%" }, "+=0.05");
+
+            tl.set(TRANSITION_SEL, { autoAlpha: 0, pointerEvents: "none" });
+            tl.set(BG_SEL, { "--t": "0%", "--b": "100%" });
+            tl.set(TEXTS_SEL, { yPercent: 100, opacity: 0 });
+
+            return tl;
+          }
+        }
+      ]
+    });
+
+    console.log('JAWS: Barba transitions initialized!');
+  }
+
   // Main initialization function
   function init() {
     console.log('JAWS: Initializing animations...');
@@ -626,6 +794,9 @@
     setTimeout(() => {
       initLenis();
     }, 100);
+    
+    // Initialize Barba transitions
+    initBarbaTransitions();
     
     console.log('JAWS: Animations initialized successfully!');
   }
