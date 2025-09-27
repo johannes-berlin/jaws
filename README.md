@@ -1,6 +1,6 @@
-# JAWS - Webflow Integration
+# JAWS - Interactive Experience
 
-GSAP-Animationen und interaktive Effekte für Webflow-Projekte.
+Eine interaktive Website mit GSAP-Animationen und modernen Scroll-Effekten, optimiert für Netlify-Deployment.
 
 ## Features
 
@@ -12,13 +12,15 @@ GSAP-Animationen und interaktive Effekte für Webflow-Projekte.
 
 ## Technologien
 
+- **HTML5** - Semantische Struktur
+- **CSS3** - Moderne Styles mit CSS Grid und Flexbox
 - **JavaScript ES6+** - Moderne JavaScript-Features
 - **GSAP 3.12.5** - Professionelle Animationen
   - ScrollTrigger Plugin
   - CustomEase Plugin
   - SplitText Plugin
+  - TextPlugin
 - **Lenis** - Smooth Scrolling Library
-- **Webflow** - Design und Hosting
 
 ## Installation
 
@@ -28,80 +30,58 @@ git clone https://github.com/johannes-berlin/jaws.git
 cd jaws
 ```
 
-2. `jaws-webflow.js` in dein Webflow-Projekt einbinden
-
-## Webflow Integration
-
-### 1. GSAP-Plugins einbinden
-
-Füge diese Scripts in den `<head>` deines Webflow-Projekts ein:
-
-```html
-<!-- GSAP Core -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<!-- GSAP Plugins -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/SplitText.min.js"></script>
-<!-- Lenis Smooth Scrolling -->
-<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.39/bundled/lenis.min.js"></script>
+2. Dependencies installieren (optional):
+```bash
+npm install
 ```
 
-### 2. Haupt-Script einbinden
-
-Füge `jaws-webflow.js` vor dem schließenden `</body>` Tag ein:
-
-```html
-<script src="jaws-webflow.js"></script>
+3. Lokalen Server starten:
+```bash
+npm run dev
+# oder
+npx serve .
 ```
 
-### 3. Benötigte Webflow-Klassen
+## Netlify Deployment
 
-#### Hamburger-Menü
-- `.menu-toggle` - Hamburger-Button
-- `.menu_new` - Menü-Overlay
-- `.menu_links_wrap` - Container für Menü-Links
-- `.menu_link` - Einzelne Menü-Links
-- `.page_main` - Haupt-Content-Container
+### Automatisches Deployment
 
-#### Director Hover-Effekte
-- `.director-item` - Container für jeden Director
-- `.director-name h2` - Director-Name
-- `.director-preview` - Video-Container
-- `.director-preview video` - Video-Element
+1. Repository zu GitHub pushen
+2. Netlify mit GitHub verbinden
+3. Build-Einstellungen:
+   - **Build Command**: `echo "No build needed"`
+   - **Publish Directory**: `.` (root)
+4. Deploy!
 
-#### Scroll-Effekte
-- `.mwg_effect037` - Haupt-Container
-- `.pin-height` - Pin-Container
-- `.container` - Sticky-Container
-- `.hidden` - Versteckte Elemente
-- `.media` - Medien-Container
+### Manuelles Deployment
 
-#### Header-Animationen
-- `.header h1` - Haupt-Titel
-- `.video-wrapper` - Video-Container im Header
-- `.menu_wrap` - Menü-Wrapper
-- `.link` - Menü-Links
-- `.socials p` - Social Media Links
-
-### 4. CSS-Variablen
-
-Füge diese CSS-Variablen zu deinem Webflow-Projekt hinzu:
-
-```css
-:root {
-    --tone-500: #888; /* Farbe für Hover-Effekte */
-}
-```
+1. Alle Dateien in einen Ordner packen
+2. Auf Netlify hochladen (Drag & Drop)
+3. Domain konfigurieren
 
 ## Projektstruktur
 
 ```
 jaws/
-├── jaws-webflow.js        # Haupt-JavaScript-Datei für Webflow
-├── webflow-integration.html # Detaillierte Integrations-Anleitung
+├── index.html              # Haupt-HTML-Datei
+├── styles.css              # Alle CSS-Styles
+├── js/                     # JavaScript-Module
+│   ├── menu.js            # Menü-Animationen
+│   ├── directors.js       # Video-Hover-Effekte
+│   ├── scroll-effects.js  # Scroll-Animationen
+│   └── header-animation.js # Header-Animationen
 ├── package.json           # NPM-Konfiguration
 └── README.md             # Diese Datei
+```
+
+## Lokale Entwicklung
+
+```bash
+# Server starten
+npm run dev
+
+# Oder mit serve
+npx serve . -l 3000
 ```
 
 ## Browser-Unterstützung
@@ -120,11 +100,11 @@ jaws/
 
 ## Anpassungen
 
-Du kannst die Animationen in der `jaws-webflow.js` Datei anpassen:
-- Timing und Easing-Funktionen
-- Stagger-Werte
-- Animation-Dauern
-- Scramble-Text-Einstellungen
+Du kannst die Animationen in den jeweiligen JavaScript-Dateien anpassen:
+- `js/menu.js` - Menü-Animationen
+- `js/directors.js` - Video-Hover-Effekte
+- `js/scroll-effects.js` - Scroll-Animationen
+- `js/header-animation.js` - Header-Animationen
 
 ## Lizenz
 
