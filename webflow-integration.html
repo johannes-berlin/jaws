@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAWS - Webflow Integration Guide</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .code-block {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .step {
+            background: #e8f4f8;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #2196F3;
+        }
+        .warning {
+            background: #fff3cd;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <h1>JAWS - Webflow Integration Guide</h1>
+    
+    <h2>📋 Benötigte GSAP-Plugins</h2>
+    <p>Füge diese Scripts in den <code>&lt;head&gt;</code> deines Webflow-Projekts ein:</p>
+    
+    <div class="code-block">
+&lt;!-- GSAP Core --&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"&gt;&lt;/script&gt;
+&lt;!-- GSAP Plugins --&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/SplitText.min.js"&gt;&lt;/script&gt;
+&lt;!-- Lenis Smooth Scrolling --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.39/bundled/lenis.min.js"&gt;&lt;/script&gt;
+    </div>
+
+    <h2>🎯 Haupt-Script einbinden</h2>
+    <p>Füge das <code>jaws-webflow.js</code> Script vor dem schließenden <code>&lt;/body&gt;</code> Tag ein:</p>
+    
+    <div class="code-block">
+&lt;script src="jaws-webflow.js"&gt;&lt;/script&gt;
+    </div>
+
+    <h2>🏗️ Webflow-Klassen und Struktur</h2>
+    
+    <div class="step">
+        <h3>1. Hamburger-Menü</h3>
+        <p><strong>Benötigte Klassen:</strong></p>
+        <ul>
+            <li><code>.menu-toggle</code> - Hamburger-Button</li>
+            <li><code>.menu_new</code> - Menü-Overlay</li>
+            <li><code>.menu_links_wrap</code> - Container für Menü-Links</li>
+            <li><code>.menu_link</code> - Einzelne Menü-Links</li>
+            <li><code>.page_main</code> - Haupt-Content-Container</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h3>2. Director Hover-Effekte</h3>
+        <p><strong>Benötigte Klassen:</strong></p>
+        <ul>
+            <li><code>.director-item</code> - Container für jeden Director</li>
+            <li><code>.director-name h2</code> - Director-Name</li>
+            <li><code>.director-preview</code> - Video-Container</li>
+            <li><code>.director-preview video</code> - Video-Element</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h3>3. Scroll-Effekte</h3>
+        <p><strong>Benötigte Klassen:</strong></p>
+        <ul>
+            <li><code>.mwg_effect037</code> - Haupt-Container</li>
+            <li><code>.pin-height</code> - Pin-Container</li>
+            <li><code>.container</code> - Sticky-Container</li>
+            <li><code>.hidden</code> - Versteckte Elemente</li>
+            <li><code>.media</code> - Medien-Container</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h3>4. Header-Animationen</h3>
+        <p><strong>Benötigte Klassen:</strong></p>
+        <ul>
+            <li><code>.header h1</code> - Haupt-Titel</li>
+            <li><code>.video-wrapper</code> - Video-Container im Header</li>
+            <li><code>.menu_wrap</code> - Menü-Wrapper</li>
+            <li><code>.link</code> - Menü-Links</li>
+            <li><code>.socials p</code> - Social Media Links</li>
+        </ul>
+    </div>
+
+    <div class="warning">
+        <h3>⚠️ Wichtige Hinweise</h3>
+        <ul>
+            <li>Stelle sicher, dass alle Klassen exakt so benannt sind</li>
+            <li>Die Scripts müssen in der richtigen Reihenfolge geladen werden</li>
+            <li>Teste die Animationen in der Webflow-Vorschau</li>
+            <li>Für Production: Minifiziere das JavaScript</li>
+        </ul>
+    </div>
+
+    <h2>🎨 CSS-Variablen</h2>
+    <p>Füge diese CSS-Variablen zu deinem Webflow-Projekt hinzu:</p>
+    
+    <div class="code-block">
+:root {
+    --tone-500: #888; /* Farbe für Hover-Effekte */
+}
+    </div>
+
+    <h2>📱 Responsive Design</h2>
+    <p>Das Script funktioniert automatisch responsive. Stelle sicher, dass deine Webflow-Elemente responsive konfiguriert sind.</p>
+
+    <h2>🔧 Anpassungen</h2>
+    <p>Du kannst die Animationen in der <code>jaws-webflow.js</code> Datei anpassen:</p>
+    <ul>
+        <li>Timing und Easing-Funktionen</li>
+        <li>Stagger-Werte</li>
+        <li>Animation-Dauern</li>
+        <li>Scramble-Text-Einstellungen</li>
+    </ul>
+
+    <h2>📞 Support</h2>
+    <p>Bei Problemen überprüfe die Browser-Konsole auf Fehler und stelle sicher, dass alle GSAP-Plugins korrekt geladen sind.</p>
+</body>
+</html>
