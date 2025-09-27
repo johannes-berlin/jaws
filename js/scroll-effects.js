@@ -1,4 +1,8 @@
-// Scroll Effects Script
+// Scroll Effects Script - COMMENTED OUT
+// This functionality is now integrated into main-legacy.js
+// to avoid conflicts and ensure proper re-initialization after page transitions
+
+/*
 document.addEventListener("DOMContentLoaded", () => {
   gsap.registerPlugin(ScrollTrigger);
 
@@ -55,3 +59,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+*/
