@@ -458,6 +458,50 @@
     }
   }
 
+  // About Visual Effects
+  function initAboutVisualEffects() {
+    document.querySelectorAll(".about_contain").forEach((element) => {
+      if (element.dataset.scriptInitialized) return;
+      element.dataset.scriptInitialized = "true";
+      
+      if (typeof ScrollTrigger === 'undefined') {
+        console.warn('ScrollTrigger not available, skipping about visual effects');
+        return;
+      }
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      let frames = gsap.utils.toArray(".about_visual-img");
+
+      gsap.to(".about_visual_inner", {
+        y: -100, // leicht nach oben
+        scrollTrigger: {
+          trigger: ".about_visual_inner",
+          start: "top bottom",   // Start, wenn top den bottom of screen erreicht
+          end: "bottom top",     // Ende, wenn aus Screen raus
+          scrub: true,
+        }
+      });
+
+      // Frame-by-Frame "durchscrollen"
+      gsap.to(frames, {
+        opacity: 1,
+        stagger: {
+          each: 1, // wird von Scroll-Länge aufgeteilt
+          from: "start",
+        },
+        scrollTrigger: {
+          trigger: ".about_visual_inner",
+          start: "top 50%",
+          end: "top top",
+          scrub: true,
+        }
+      });
+
+      console.log('About visual effects initialized for element:', element);
+    });
+  }
+
   // Header Animations
   function initHeaderAnimations() {
     if (CustomEase) {
@@ -684,6 +728,7 @@
             initMenuAnimations();
             initDirectorsHover();
             initScrollEffects();
+            initAboutVisualEffects();
             initHeaderAnimations();
             initLenis();
             console.log('JAWS: Animations re-initialized successfully!');
@@ -788,6 +833,7 @@
     initMenuAnimations();
     initDirectorsHover();
     initScrollEffects();
+    initAboutVisualEffects();
     initHeaderAnimations();
     
     // Initialize Lenis after a short delay to ensure it's loaded
