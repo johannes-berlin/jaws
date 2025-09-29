@@ -1374,7 +1374,6 @@
             initScrollEffects();
             initAboutVisualEffects();
             initFAQEffects();
-            initVideoLightbox();
             initHeaderAnimations();
             initLenis();
             console.log('JAWS: Animations re-initialized successfully!');
@@ -1481,7 +1480,6 @@
     initScrollEffects();
     initAboutVisualEffects();
     initFAQEffects();
-    initVideoLightbox();
     initHeaderAnimations();
     
     // Initialize Lenis after a short delay to ensure it's loaded
