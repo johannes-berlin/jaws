@@ -492,7 +492,7 @@
         },
         scrollTrigger: {
           trigger: ".about_visual_inner",
-          start: "top 25%",
+          start: "top 75%",
           end: "top top",
           scrub: true,
         }
