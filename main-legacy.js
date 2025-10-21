@@ -538,7 +538,7 @@
         // Beim Schließen: Klassen entfernen (inkl. u-theme-brand)
         const closeAccordion = () => thisCard.classList.contains("is-opened") && (
           thisCard.classList.remove("is-opened"),
-          thisCard.classList.remove("u-theme-brand"),
+          thisCard.classList.remove("u-theme-dark"),
           tl.reverse(),
           button.setAttribute("aria-expanded", "false")
         );
@@ -550,7 +550,7 @@
           previousIndex = cardIndex;
           button.setAttribute("aria-expanded", "true");
           thisCard.classList.add("is-opened");
-          thisCard.classList.add("u-theme-brand"); // <-- hier die Wunschklasse setzen
+          thisCard.classList.add("u-theme-dark"); // <-- hier die Wunschklasse setzen
           instant ? tl.progress(1) : tl.play();
         };
         if (openByDefault === cardIndex) openAccordion(true);
