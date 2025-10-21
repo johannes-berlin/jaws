@@ -1125,6 +1125,129 @@
     console.log('Video lightbox initialized successfully');
   }
 
+  // Slideshow Effects
+  function initSlideshowEffects() {
+    const slideshowSection = document.querySelector(".slideshow-section");
+    if (!slideshowSection) return;
+
+    // Initial load lock
+    const body = document.querySelector("body");
+    body.classList.add("hidden");
+
+    document.addEventListener("DOMContentLoaded", function () {
+      body.classList.remove("hidden");
+      
+      if (typeof ScrollTrigger === 'undefined') {
+        console.warn('ScrollTrigger not available, skipping slideshow effects');
+        return;
+      }
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      // DOM
+      const slideshow = {
+        section: document.querySelector(".slideshow-section"),
+        container: document.querySelector(".slideshow"),
+        slides: document.querySelectorAll(".slideshow .slide"),
+        images: document.querySelectorAll(".slideshow .slide_image"),
+        allContent: document.querySelectorAll(
+          ".slideshow .slide .slide_content .slide_content-image, .slideshow .slide .slide_content .slide_content-text"
+        )
+      };
+
+      // Inhalte je Slide in Gruppen (2 Elemente pro Slide)
+      const getSlidesContent = () => {
+        const groups = [];
+        let g = 0;
+        groups[g] = [];
+        slideshow.allContent.forEach((item, i) => {
+          groups[g].push(item);
+          if ((i + 1) % 2 === 0) { g++; groups[g] = []; }
+        });
+        if (groups.length && groups[groups.length - 1].length === 0) groups.pop();
+        return groups;
+      };
+
+      const slidesContent = getSlidesContent();
+      const slides = slideshow.slides;
+      const total = slides.length;
+
+      if (total === 0) return;
+
+      // GPU Hinting
+      gsap.set([
+        ".slideshow .slide",
+        ".slideshow .slide_image",
+        ".slideshow .slide_content > *"
+      ], { force3D: true, willChange: "transform" });
+
+      // Startzustand
+      gsap.set(slides, { yPercent: 100, zIndex: 0, position: "absolute", inset: 0 });
+      if (total) gsap.set(slides[0], { yPercent: 0, zIndex: 1 });
+
+      // Scroll-Distanz: (total-1) * viewport + extra padding to prevent overscroll
+      const endDistance = () => {
+        const baseDistance = total > 1 ? (total - 1) * window.innerHeight : window.innerHeight * 0.5;
+        // Add extra padding to prevent easy overscroll of first slide
+        return baseDistance + window.innerHeight * 0.3;
+      };
+
+      // Haupt-Timeline
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: slideshow.section,
+          start: "top top",
+          end: () => "+=" + endDistance(),
+          pin: slideshow.container,
+          scrub: 1.5, // slightly slower scrub for better control
+          snap: {
+            snapTo: (value) => {
+              const step = 1 / (total - 1 || 1);
+              return Math.round(value / step) * step;
+            },
+            delay: 0.1, // slight delay to prevent immediate snapping
+            duration: { min: 0.12, max: 0.2 }, // slightly longer for smoother transitions
+            ease: "power2.out" // smoother easing
+          },
+          anticipatePin: 1,
+          // Add pin spacing to prevent overscroll
+          pinSpacing: true,
+          // Prevent immediate triggering
+          invalidateOnRefresh: true
+        }
+      });
+
+      // Übergänge i -> i+1
+      for (let i = 0; i < total - 1; i++) {
+        const current = slides[i];
+        const next = slides[i + 1];
+
+        tl.add(() => {
+          gsap.set([current, next], { zIndex: 0 });
+          gsap.set(current, { zIndex: 2 });
+          gsap.set(next, { zIndex: 1, yPercent: 100 });
+        });
+
+        // Positions-Tweens linear (keine Ease-Kollisionen mit scrub)
+        tl.to(current, { yPercent: -100, ease: "none" }, "<")
+          .to(next,    { yPercent: 0,    ease: "none" }, "<")
+          // Style/Parallax dürfen eased bleiben
+          .from(slideshow.images[i + 1], { yPercent: 10, scale: 1.2, duration: 2.25, ease: "power2.out" }, "<")
+          .from(slidesContent[i + 1],    { yPercent: 140, stagger: 0.08, duration: 1.8, ease: "power2.out" }, "<+0.2")
+          .add(() => {
+            gsap.set(slides, { zIndex: 0 });
+            gsap.set(next,   { zIndex: 1 });
+          }, "<");
+      }
+
+      // Responsives Recalc bei Resize (für endDistance & snug snapping)
+      const refresh = () => ScrollTrigger.refresh();
+      window.addEventListener("resize", refresh);
+
+      console.log('Slideshow effects initialized successfully');
+    });
+  }
+
   // Header Animations
   function initHeaderAnimations() {
     if (CustomEase) {
@@ -1353,6 +1476,7 @@
             initScrollEffects();
             initAboutVisualEffects();
             initFAQEffects();
+            initSlideshowEffects();
             initHeaderAnimations();
             console.log('JAWS: Animations re-initialized successfully!');
           }, 100);
@@ -1458,6 +1582,7 @@
     initScrollEffects();
     initAboutVisualEffects();
     initFAQEffects();
+    initSlideshowEffects();
     initHeaderAnimations();
     
     
