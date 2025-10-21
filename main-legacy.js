@@ -25,27 +25,6 @@
     gsap.registerPlugin(SplitText);
   }
 
-  // Lenis Smooth Scrolling
-  let lenis;
-
-  // Initialize Lenis
-  function initLenis() {
-    if (typeof Lenis !== 'undefined') {
-      lenis = new Lenis({
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
-      });
-
-      lenis.on('scroll', () => {
-        if (ScrollTrigger) ScrollTrigger.update();
-      });
-
-      gsap.ticker.add((time) => {
-        lenis.raf(time * 1000);
-      });
-      gsap.ticker.lagSmoothing(0);
-    }
-  }
 
   // Menu Animations
   function initMenuAnimations() {
@@ -1375,7 +1354,6 @@
             initAboutVisualEffects();
             initFAQEffects();
             initHeaderAnimations();
-            initLenis();
             console.log('JAWS: Animations re-initialized successfully!');
           }, 100);
         });
@@ -1482,10 +1460,6 @@
     initFAQEffects();
     initHeaderAnimations();
     
-    // Initialize Lenis after a short delay to ensure it's loaded
-    setTimeout(() => {
-      initLenis();
-    }, 100);
     
     // Initialize Barba transitions
     initBarbaTransitions();
