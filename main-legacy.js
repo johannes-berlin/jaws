@@ -1519,9 +1519,11 @@
       },
       (context) => {
         const { isMobile, isMobileLandscape, isTablet } = context.conditions;
-
-        const ctx = gsap.context(() => {
-          document.querySelectorAll('[data-parallax="trigger"]').forEach((trigger) => {
+        let ctx;
+        // Defer to next frame to ensure late-rendered nodes exist
+        requestAnimationFrame(() => {
+          ctx = gsap.context(() => {
+            document.querySelectorAll('[data-parallax="trigger"]').forEach((trigger) => {
             const disable = trigger.getAttribute('data-parallax-disable');
             if (
               (disable === 'mobile' && isMobile) ||
@@ -1564,10 +1566,15 @@
                 },
               }
             );
+            });
+            // Ensure ScrollTrigger calculates with final layout
+            if (typeof ScrollTrigger !== 'undefined') {
+              ScrollTrigger.refresh();
+            }
           });
         });
 
-        return () => ctx.revert();
+        return () => ctx && ctx.revert && ctx.revert();
       }
     );
   }
