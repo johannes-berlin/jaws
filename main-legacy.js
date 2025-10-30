@@ -1649,6 +1649,7 @@
             initFAQEffects();
             initSliderSection();
             initSwiperSlider();
+            initGlobalParallax();
             initHeaderAnimations();
             console.log('JAWS: Animations re-initialized successfully!');
           }, 100);
