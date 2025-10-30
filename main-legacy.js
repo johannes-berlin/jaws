@@ -38,7 +38,7 @@
     const slides = [
       { title1: 'Movement', title2: 'Direction', image: 'https://cdn.prod.website-files.com/68d3d3fa77a42780d77106a3/6901f4930765940fab4233e7_JAWS_Movement_Direction.avif' },
       { title1: 'Personal', title2: 'Training', image: 'https://cdn.prod.website-files.com/68d3d3fa77a42780d77106a3/6901f493093b99ac2ea567bb_JAWS_Personal_Training.avif' },
-      { title1: 'Brand     ', title2: 'Consulting', image: 'https://cdn.prod.website-files.com/68d3d3fa77a42780d77106a3/6901f49330164caa34c0d324_JAWS_Brand_Consulting.avif' },
+      { title1: 'Brand', title2: 'Consulting', image: 'https://cdn.prod.website-files.com/68d3d3fa77a42780d77106a3/6901f49330164caa34c0d324_JAWS_Brand_Consulting.avif' },
     ];
 
     const pinDistance = window.innerHeight * slides.length;
@@ -122,7 +122,7 @@
       pin: true,
       pinSpacing: true,
       onUpdate: (self) => {
-        if (progressBar) gsap.set(progressBar, { scaleY: self.progress });
+        if (progressBar) gsap.set(progressBar, { scaleX: self.progress });
         const currentSlide = Math.floor(self.progress * slides.length);
         if (activeSlide !== currentSlide && currentSlide < slides.length) {
           activeSlide = currentSlide;
