@@ -1304,7 +1304,7 @@
         grabCursor: true,
         breakpoints: {
           480: { slidesPerView: 1.8 },
-          992: { slidesPerView: 3 }
+          992: { slidesPerView: 2 }
         },
         navigation: {
           nextEl: nextButton || undefined,
