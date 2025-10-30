@@ -143,6 +143,66 @@
     gsap.registerPlugin(SplitText);
   }
 
+  // Lenis Smooth Scrolling (centralized)
+  function initLenis() {
+    if (typeof Lenis === 'undefined') {
+      console.warn('Lenis not available, skipping smooth scroll');
+      return;
+    }
+    if (window.__JAWS_LENIS_INITIALIZED__) return;
+
+    try {
+      const lenis = new Lenis({
+        lerp: 0.1,
+        wheelMultiplier: 0.7,
+        gestureOrientation: 'vertical',
+        normalizeWheel: false,
+        smoothTouch: false,
+      });
+
+      // Keep a reference and init flag
+      window.__JAWS_LENIS__ = lenis;
+      window.__JAWS_LENIS_INITIALIZED__ = true;
+
+      // Sync ScrollTrigger if present
+      if (typeof ScrollTrigger !== 'undefined') {
+        lenis.on('scroll', ScrollTrigger.update);
+      }
+
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      // Wire controls (jQuery if present, otherwise vanilla)
+      if (window.jQuery) {
+        const $ = window.jQuery;
+        $('[data-lenis-start]').on('click', function () { lenis.start(); });
+        $('[data-lenis-stop]').on('click', function () { lenis.stop(); });
+        $('[data-lenis-toggle]').on('click', function () {
+          const el = $(this);
+          el.toggleClass('stop-scroll');
+          if (el.hasClass('stop-scroll')) lenis.stop(); else lenis.start();
+        });
+      } else {
+        document.querySelectorAll('[data-lenis-start]')
+          .forEach((el) => el.addEventListener('click', () => { window.__JAWS_LENIS__ && window.__JAWS_LENIS__.start(); }));
+        document.querySelectorAll('[data-lenis-stop]')
+          .forEach((el) => el.addEventListener('click', () => { window.__JAWS_LENIS__ && window.__JAWS_LENIS__.stop(); }));
+        document.querySelectorAll('[data-lenis-toggle]')
+          .forEach((el) => el.addEventListener('click', function () {
+            this.classList.toggle('stop-scroll');
+            const inst = window.__JAWS_LENIS__;
+            if (!inst) return;
+            if (this.classList.contains('stop-scroll')) inst.stop(); else inst.start();
+          }));
+      }
+    } catch (e) {
+      console.warn('Lenis initialization failed:', e);
+    }
+  }
+
 
   // Menu Animations
   function initMenuAnimations() {
@@ -1511,6 +1571,7 @@
           setTimeout(() => {
             console.log('JAWS: Re-initializing animations after page transition...');
             initMenuAnimations();
+            initLenis();
             initWorkHover();
             initScrollEffects();
             initAboutVisualEffects();
@@ -1618,6 +1679,7 @@
     
     // Initialize all effects
     initMenuAnimations();
+    initLenis();
     initWorkHover();
     initScrollEffects();
     initAboutVisualEffects();
