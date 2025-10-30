@@ -1279,6 +1279,50 @@
     }
   }
 
+  // Swiper Sliders
+  function initSwiperSlider() {
+    if (typeof Swiper === 'undefined') {
+      console.warn('Swiper not available, skipping sliders');
+      return;
+    }
+
+    const swiperSliderGroups = document.querySelectorAll('[data-swiper-group]');
+    if (!swiperSliderGroups.length) return;
+
+    swiperSliderGroups.forEach((swiperGroup) => {
+      const swiperSliderWrap = swiperGroup.querySelector('[data-swiper-wrap]');
+      if (!swiperSliderWrap) return;
+
+      const prevButton = swiperGroup.querySelector('[data-swiper-prev]');
+      const nextButton = swiperGroup.querySelector('[data-swiper-next]');
+      const paginationEl = swiperGroup.querySelector('.swiper-pagination');
+
+      // eslint-disable-next-line no-new
+      new Swiper(swiperSliderWrap, {
+        slidesPerView: 1.25,
+        speed: 600,
+        grabCursor: true,
+        breakpoints: {
+          480: { slidesPerView: 1.8 },
+          992: { slidesPerView: 3 }
+        },
+        navigation: {
+          nextEl: nextButton || undefined,
+          prevEl: prevButton || undefined,
+        },
+        pagination: {
+          el: paginationEl || '.swiper-pagination',
+          type: 'bullets',
+          clickable: true
+        },
+        keyboard: {
+          enabled: true,
+          onlyInViewport: false,
+        },
+      });
+    });
+  }
+
   // Barba Transitions Integration
   function initBarbaTransitions() {
     if (typeof barba === 'undefined') {
@@ -1353,6 +1397,7 @@
             initScrollEffects();
             initAboutVisualEffects();
             initFAQEffects();
+            initSwiperSlider();
             initHeaderAnimations();
             console.log('JAWS: Animations re-initialized successfully!');
           }, 100);
@@ -1458,6 +1503,7 @@
     initScrollEffects();
     initAboutVisualEffects();
     initFAQEffects();
+    initSwiperSlider();
     initHeaderAnimations();
     
     
