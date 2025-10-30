@@ -235,8 +235,8 @@
     });
   }
 
-  // Directors Hover Effects
-  function initDirectorsHover() {
+  // Work Hover Effects
+  function initWorkHover() {
     const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
     const DURATION = 0.25;
     const STAGGER = 50;
@@ -477,7 +477,7 @@
       }
     }
 
-    function initDirectorsHover() {
+    function initWorkHover() {
       setInitialStyles();
       
       const directorItems = document.querySelectorAll(".director-item");
@@ -494,7 +494,7 @@
       });
     }
 
-    initDirectorsHover();
+    initWorkHover();
   }
 
   // Scroll Effects
@@ -1511,7 +1511,7 @@
           setTimeout(() => {
             console.log('JAWS: Re-initializing animations after page transition...');
             initMenuAnimations();
-            initDirectorsHover();
+            initWorkHover();
             initScrollEffects();
             initAboutVisualEffects();
             initFAQEffects();
@@ -1618,7 +1618,7 @@
     
     // Initialize all effects
     initMenuAnimations();
-    initDirectorsHover();
+    initWorkHover();
     initScrollEffects();
     initAboutVisualEffects();
     initFAQEffects();
