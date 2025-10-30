@@ -88,7 +88,7 @@
 
     function animateNewTitle(index) {
       if (currentSplit && typeof currentSplit.revert === 'function') currentSplit.revert();
-      sliderTitle.innerHTML = '<h1 class="title-line">' + slides[index].title1 + '</h1>\n      <p class="title-line">' + slides[index].title2 + '</p>';
+      sliderTitle.innerHTML = '<h2 class="title-line">' + slides[index].title1 + '</h2>\n      <h2 class="title-line">' + slides[index].title2 + '</h2>';
       if (typeof SplitText === 'undefined') return;
       currentSplit = new SplitText('.title-line', { type: 'lines', linesClass: 'line', mask: 'lines' });
       gsap.set(currentSplit.lines, { yPercent: 100, opacity: 0 });
