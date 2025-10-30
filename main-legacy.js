@@ -14,6 +14,124 @@
     return;
   }
 
+  // Slider Section (optional Lenis)
+  function initSliderSection() {
+    const sliderRoot = document.querySelector('.slider');
+    if (!sliderRoot) return;
+
+    if (typeof ScrollTrigger === 'undefined') {
+      console.warn('ScrollTrigger not available, skipping slider section');
+      return;
+    }
+
+    // Optional: Lenis wiring (only if present)
+    if (typeof Lenis !== 'undefined' && !window.__JAWS_LENIS_INITIALIZED__) {
+      try {
+        const lenis = new Lenis();
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
+        window.__JAWS_LENIS_INITIALIZED__ = true;
+      } catch (_) {}
+    }
+
+    const slides = [
+      { title1: 'Movement', title2: 'Direction', image: 'https://cdn.prod.website-files.com/68d3d3fa77a42780d77106a3/6901f4930765940fab4233e7_JAWS_Movement_Direction.avif' },
+      { title1: 'Personal', title2: 'Training', image: 'https://cdn.prod.website-files.com/68d3d3fa77a42780d77106a3/6901f493093b99ac2ea567bb_JAWS_Personal_Training.avif' },
+      { title1: 'Brand', title2: 'Consulting', image: 'https://cdn.prod.website-files.com/68d3d3fa77a42780d77106a3/6901f49330164caa34c0d324_JAWS_Brand_Consulting.avif' },
+    ];
+
+    const pinDistance = window.innerHeight * slides.length;
+    const progressBar = document.querySelector('.slider-progress');
+    const sliderImages = document.querySelector('.slider-images');
+    const sliderTitle = document.querySelector('.slider-title');
+    const sliderIndices = document.querySelector('.slider-indices');
+
+    if (!sliderImages || !sliderTitle || !sliderIndices) return;
+
+    let activeSlide = 0;
+    let currentSplit = null;
+
+    function createIndices() {
+      sliderIndices.innerHTML = '';
+      slides.forEach((_, index) => {
+        const indexNum = String(index + 1).padStart(2, '0');
+        const indicatorElement = document.createElement('p');
+        indicatorElement.dataset.index = String(index);
+        indicatorElement.innerHTML = '<span class="marker"></span><span class="index">' + indexNum + '</span>';
+        sliderIndices.appendChild(indicatorElement);
+
+        if (index === 0) {
+          gsap.set(indicatorElement.querySelector('.index'), { opacity: 1 });
+          gsap.set(indicatorElement.querySelector('.marker'), { scaleX: 1 });
+        } else {
+          gsap.set(indicatorElement.querySelector('.index'), { opacity: 0.35 });
+          gsap.set(indicatorElement.querySelector('.marker'), { scaleX: 0 });
+        }
+      });
+    }
+
+    function animateIndicators(index) {
+      const indicators = sliderIndices.querySelectorAll('p');
+      indicators.forEach((indicator, i) => {
+        const markerElement = indicator.querySelector('.marker');
+        const indexElement = indicator.querySelector('.index');
+        if (i === index) {
+          gsap.to(indexElement, { opacity: 1, duration: 0.3, ease: 'power2.out' });
+          gsap.to(markerElement, { scaleX: 1, duration: 0.3, ease: 'power2.out' });
+        } else {
+          gsap.to(indexElement, { opacity: 0.5, duration: 0.3, ease: 'power2.out' });
+          gsap.to(markerElement, { scaleX: 0, duration: 0.3, ease: 'power2.out' });
+        }
+      });
+    }
+
+    function animateNewTitle(index) {
+      if (currentSplit && typeof currentSplit.revert === 'function') currentSplit.revert();
+      sliderTitle.innerHTML = '<h1 class="title-line">' + slides[index].title1 + '</h1>\n      <h1 class="title-line">' + slides[index].title2 + '</h1>';
+      if (typeof SplitText === 'undefined') return;
+      currentSplit = new SplitText('.title-line', { type: 'lines', linesClass: 'line', mask: 'lines' });
+      gsap.set(currentSplit.lines, { yPercent: 100, opacity: 0 });
+      gsap.to(currentSplit.lines, { yPercent: 10, opacity: 1, duration: 0.75, stagger: 0.1, ease: 'power3.out' });
+    }
+
+    function animateNewSlide(index) {
+      const newSliderImage = document.createElement('img');
+      newSliderImage.src = slides[index].image;
+      newSliderImage.alt = 'Slide ' + String(index + 1);
+      gsap.set(newSliderImage, { opacity: 0, scale: 1.1 });
+      sliderImages.appendChild(newSliderImage);
+      gsap.to(newSliderImage, { opacity: 1, duration: 0.5, ease: 'power2.out' });
+      gsap.to(newSliderImage, { scale: 1, duration: 1, ease: 'power2.out' });
+      const allImages = sliderImages.querySelectorAll('img');
+      if (allImages.length > 3) {
+        const removeCount = allImages.length - 3;
+        for (let i = 0; i < removeCount; i++) sliderImages.removeChild(allImages[i]);
+      }
+      animateNewTitle(index);
+      animateIndicators(index);
+    }
+
+    createIndices();
+
+    ScrollTrigger.create({
+      trigger: '.slider',
+      start: 'top top',
+      end: '+=' + pinDistance + 'px',
+      scrub: 1,
+      pin: true,
+      pinSpacing: true,
+      onUpdate: (self) => {
+        if (progressBar) gsap.set(progressBar, { scaleY: self.progress });
+        const currentSlide = Math.floor(self.progress * slides.length);
+        if (activeSlide !== currentSlide && currentSlide < slides.length) {
+          activeSlide = currentSlide;
+          animateNewSlide(activeSlide);
+        }
+      },
+    });
+  }
+
   // Register plugins if available
   if (typeof ScrollTrigger !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
@@ -1397,6 +1515,7 @@
             initScrollEffects();
             initAboutVisualEffects();
             initFAQEffects();
+            initSliderSection();
             initSwiperSlider();
             initHeaderAnimations();
             console.log('JAWS: Animations re-initialized successfully!');
@@ -1503,6 +1622,7 @@
     initScrollEffects();
     initAboutVisualEffects();
     initFAQEffects();
+    initSliderSection();
     initSwiperSlider();
     initHeaderAnimations();
     
