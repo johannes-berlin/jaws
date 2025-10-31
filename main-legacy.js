@@ -1009,34 +1009,7 @@
       gsap.set(data.next.container, { position: "fixed", top: 0, left: 0, width: "100%" });
     });
 
-    function __forceCloseActiveLightbox() {
-      try {
-        document.querySelectorAll('[data-bunny-lightbox-status="active"]').forEach(function(activeWrap){
-          // Pause any playing video
-          var vid = activeWrap.querySelector('[data-bunny-lightbox-init] video');
-          if (vid) { try { vid.pause(); } catch(_) {} }
-          // Reset attributes and inline overlay styles
-          activeWrap.setAttribute('data-bunny-lightbox-status', 'not-active');
-          activeWrap.style.position = '';
-          activeWrap.style.top = '';
-          activeWrap.style.left = '';
-          activeWrap.style.right = '';
-          activeWrap.style.bottom = '';
-          activeWrap.style.width = '';
-          activeWrap.style.height = '';
-          activeWrap.style.zIndex = '';
-          if (activeWrap.style.background === 'rgba(0, 0, 0, 0.9)') activeWrap.style.background = '';
-          activeWrap.style.pointerEvents = '';
-        });
-        // Unlock scroll on page swap
-        document.documentElement.style.overflow = '';
-        document.body.style.overflow = '';
-        document.documentElement.removeAttribute('data-bunny-lightbox-scroll-lock');
-      } catch (_) {}
-    }
-
     barba.hooks.leave((data) => {
-      __forceCloseActiveLightbox();
       // Alte ScrollTriggers vor dem Wechsel aufräumen
       if (window.ScrollTrigger) {
         try { ScrollTrigger.getAll().forEach((t) => t.kill()); } catch (e) {}
@@ -1047,12 +1020,7 @@
       gsap.set(data.next.container, { position: "relative" });
       $(window).scrollTop(0);
       reinitAfterSwap(data);
-      // Ensure any leftover scroll locks are cleared
-      try {
-        document.documentElement.style.overflow = '';
-        document.body.style.overflow = '';
-        document.documentElement.removeAttribute('data-bunny-lightbox-scroll-lock');
-      } catch (_) {}
+      // No-op
     });
 
     /* ========= Selektoren für Transition ========= */
@@ -1125,18 +1093,8 @@
     console.log('JAWS: Barba transitions initialized!');
   }
 
-  // Bunny Lightbox (legacy, non-module)
-  function ensureHlsJs() {
-    if (typeof window !== 'undefined' && !window.Hls) {
-      try {
-        var s = document.createElement('script');
-        s.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest';
-        s.async = true;
-        document.head.appendChild(s);
-      } catch (_) {}
-    }
-  }
-
+  // Bunny Lightbox removed
+  /*
   function initBunnyLightboxPlayer() {
     var player = document.querySelector('[data-bunny-lightbox-init]');
     if (!player) return;
@@ -1580,11 +1538,7 @@
       });
     }
   }
-
-  // expose on window and pre-load hls.js if needed
-  if (typeof window !== 'undefined') {
-    window.initBunnyLightboxPlayer = initBunnyLightboxPlayer;
-  }
+  */
 
   // Main initialization function
   function init() {
@@ -1600,8 +1554,7 @@
             initSliderSection();
     initSwiperSlider();
     initHeaderAnimations();
-    ensureHlsJs();
-    initBunnyLightboxPlayer();
+    // Bunny Lightbox removed
     
     
     // Initialize Barba transitions
