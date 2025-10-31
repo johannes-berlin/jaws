@@ -1009,7 +1009,34 @@
       gsap.set(data.next.container, { position: "fixed", top: 0, left: 0, width: "100%" });
     });
 
+    function __forceCloseActiveLightbox() {
+      try {
+        document.querySelectorAll('[data-bunny-lightbox-status="active"]').forEach(function(activeWrap){
+          // Pause any playing video
+          var vid = activeWrap.querySelector('[data-bunny-lightbox-init] video');
+          if (vid) { try { vid.pause(); } catch(_) {} }
+          // Reset attributes and inline overlay styles
+          activeWrap.setAttribute('data-bunny-lightbox-status', 'not-active');
+          activeWrap.style.position = '';
+          activeWrap.style.top = '';
+          activeWrap.style.left = '';
+          activeWrap.style.right = '';
+          activeWrap.style.bottom = '';
+          activeWrap.style.width = '';
+          activeWrap.style.height = '';
+          activeWrap.style.zIndex = '';
+          if (activeWrap.style.background === 'rgba(0, 0, 0, 0.9)') activeWrap.style.background = '';
+          activeWrap.style.pointerEvents = '';
+        });
+        // Unlock scroll on page swap
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+        document.documentElement.removeAttribute('data-bunny-lightbox-scroll-lock');
+      } catch (_) {}
+    }
+
     barba.hooks.leave((data) => {
+      __forceCloseActiveLightbox();
       // Alte ScrollTriggers vor dem Wechsel aufräumen
       if (window.ScrollTrigger) {
         try { ScrollTrigger.getAll().forEach((t) => t.kill()); } catch (e) {}
@@ -1020,6 +1047,12 @@
       gsap.set(data.next.container, { position: "relative" });
       $(window).scrollTop(0);
       reinitAfterSwap(data);
+      // Ensure any leftover scroll locks are cleared
+      try {
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+        document.documentElement.removeAttribute('data-bunny-lightbox-scroll-lock');
+      } catch (_) {}
     });
 
     /* ========= Selektoren für Transition ========= */
@@ -1267,12 +1300,61 @@
       });
     }
 
+    function lockScroll(locked) {
+      try {
+        var root = document.documentElement;
+        var body = document.body;
+        if (locked) {
+          root.style.overflow = 'hidden';
+          body.style.overflow = 'hidden';
+          root.setAttribute('data-bunny-lightbox-scroll-lock', 'true');
+        } else {
+          root.style.overflow = '';
+          body.style.overflow = '';
+          root.removeAttribute('data-bunny-lightbox-scroll-lock');
+        }
+      } catch (_) {}
+    }
+
     function ensureOpenUI(isActive) {
       var state = isActive ? 'active' : 'not-active';
       if (wrapper.getAttribute('data-bunny-lightbox-status') !== state) {
         wrapper.setAttribute('data-bunny-lightbox-status', state);
       }
-      if (isActive && typeof player._applyClamp === 'function') player._applyClamp();
+      if (isActive) {
+        // Elevate as overlay and lock scroll
+        try {
+          wrapper.style.position = 'fixed';
+          wrapper.style.top = '0';
+          wrapper.style.left = '0';
+          wrapper.style.right = '0';
+          wrapper.style.bottom = '0';
+          wrapper.style.width = '100%';
+          wrapper.style.height = '100%';
+          wrapper.style.zIndex = '9999';
+          // Only set a dim background if none was provided via CSS
+          if (!wrapper.style.background) wrapper.style.background = 'rgba(0,0,0,0.9)';
+          wrapper.style.pointerEvents = 'auto';
+        } catch (_) {}
+        lockScroll(true);
+        if (typeof player._applyClamp === 'function') player._applyClamp();
+      } else {
+        // Reset overlay styles and unlock scroll
+        try {
+          wrapper.style.position = '';
+          wrapper.style.top = '';
+          wrapper.style.left = '';
+          wrapper.style.right = '';
+          wrapper.style.bottom = '';
+          wrapper.style.width = '';
+          wrapper.style.height = '';
+          wrapper.style.zIndex = '';
+          // Do not blank background if the site set it via stylesheet; only remove inline value we set
+          if (wrapper.style.background === 'rgba(0, 0, 0, 0.9)') wrapper.style.background = '';
+          wrapper.style.pointerEvents = '';
+        } catch (_) {}
+        lockScroll(false);
+      }
     }
 
     function isSameSrc(next){ return currentSrc && currentSrc === next; }
