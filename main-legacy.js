@@ -1685,8 +1685,17 @@
     initScrollEffects();
     initAboutVisualEffects();
     initFAQEffects();
-    initSliderSection();
+            initSliderSection();
     initSwiperSlider();
+            // ensure bunny lightbox script present then init
+            ;(function ensureBunny(){
+              function callInit(){ if (window.initBunnyLightboxPlayer) try{ window.initBunnyLightboxPlayer(); }catch(e){} }
+              if (window.initBunnyLightboxPlayer) { callInit(); return; }
+              var existing = document.querySelector('script[data-jaws-bunny]');
+              if (existing) { existing.addEventListener('load', callInit, { once: true }); return; }
+              var s = document.createElement('script'); s.src = '/js/bunny-lightbox.js'; s.async = true; s.defer = true; s.setAttribute('data-jaws-bunny','');
+              s.addEventListener('load', callInit, { once: true }); document.head.appendChild(s);
+            })();
     initHeaderAnimations();
     
     
