@@ -1693,7 +1693,23 @@
               if (window.initBunnyLightboxPlayer) { callInit(); return; }
               var existing = document.querySelector('script[data-jaws-bunny]');
               if (existing) { existing.addEventListener('load', callInit, { once: true }); return; }
-              var s = document.createElement('script'); s.src = '/js/bunny-lightbox.js'; s.async = true; s.defer = true; s.setAttribute('data-jaws-bunny','');
+              function resolveBunnyUrl(){
+                var scripts = document.getElementsByTagName('script');
+                var selfSrc = '';
+                for (var i=0;i<scripts.length;i++) {
+                  var src = scripts[i].getAttribute('src')||'';
+                  if (src.indexOf('main-legacy.js') !== -1) { selfSrc = src; break; }
+                }
+                try {
+                  var url = new URL(selfSrc, window.location.href);
+                  var base = url.origin + url.pathname.replace(/[^\/]*$/, ''); // directory of main-legacy.js
+                  return base + 'js/bunny-lightbox.js';
+                } catch(_) {
+                  // fallback to absolute Netlify path (adjust if hosting changes)
+                  return 'https://jawsnelson.netlify.app/js/bunny-lightbox.js';
+                }
+              }
+              var s = document.createElement('script'); s.src = resolveBunnyUrl(); s.async = true; s.defer = true; s.setAttribute('data-jaws-bunny','');
               s.addEventListener('load', callInit, { once: true }); document.head.appendChild(s);
             })();
     initHeaderAnimations();
