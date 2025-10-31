@@ -1010,6 +1010,27 @@
     });
 
     barba.hooks.leave((data) => {
+      // Close any active lightbox before transition
+      try {
+        document.querySelectorAll('[data-bunny-lightbox-status="active"]').forEach(function(activeWrap){
+          var vid = activeWrap.querySelector('[data-bunny-lightbox-init] video');
+          if (vid) { try { vid.pause(); } catch(_) {} }
+          activeWrap.setAttribute('data-bunny-lightbox-status', 'not-active');
+          activeWrap.style.position = '';
+          activeWrap.style.top = '';
+          activeWrap.style.left = '';
+          activeWrap.style.right = '';
+          activeWrap.style.bottom = '';
+          activeWrap.style.width = '';
+          activeWrap.style.height = '';
+          activeWrap.style.zIndex = '';
+          if (activeWrap.style.background === 'rgba(0, 0, 0, 0.9)') activeWrap.style.background = '';
+          activeWrap.style.pointerEvents = '';
+        });
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+        document.documentElement.removeAttribute('data-bunny-lightbox-scroll-lock');
+      } catch (_) {}
       // Alte ScrollTriggers vor dem Wechsel aufräumen
       if (window.ScrollTrigger) {
         try { ScrollTrigger.getAll().forEach((t) => t.kill()); } catch (e) {}
@@ -1020,7 +1041,12 @@
       gsap.set(data.next.container, { position: "relative" });
       $(window).scrollTop(0);
       reinitAfterSwap(data);
-      // No-op
+      // Ensure any leftover scroll locks are cleared after transition
+      try {
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+        document.documentElement.removeAttribute('data-bunny-lightbox-scroll-lock');
+      } catch (_) {}
     });
 
     /* ========= Selektoren für Transition ========= */
@@ -1093,8 +1119,18 @@
     console.log('JAWS: Barba transitions initialized!');
   }
 
-  // Bunny Lightbox removed
-  /*
+  // Bunny Lightbox Player
+  function ensureHlsJs() {
+    if (typeof window !== 'undefined' && !window.Hls) {
+      try {
+        var s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest';
+        s.async = true;
+        document.head.appendChild(s);
+      } catch (_) {}
+    }
+  }
+
   function initBunnyLightboxPlayer() {
     var player = document.querySelector('[data-bunny-lightbox-init]');
     if (!player) return;
@@ -1538,7 +1574,11 @@
       });
     }
   }
-  */
+
+  // Expose on window for external use
+  if (typeof window !== 'undefined') {
+    window.initBunnyLightboxPlayer = initBunnyLightboxPlayer;
+  }
 
   // Main initialization function
   function init() {
@@ -1554,8 +1594,8 @@
             initSliderSection();
     initSwiperSlider();
     initHeaderAnimations();
-    // Bunny Lightbox removed
-    
+    ensureHlsJs();
+    initBunnyLightboxPlayer();
     
     // Initialize Barba transitions
     initBarbaTransitions();
