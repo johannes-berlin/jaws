@@ -615,8 +615,8 @@
     }
   }
 
-  // Marquee with scroll-direction integration (disabled)
-  /* function initMarqueeScrollDirection() {
+  // Marquee with scroll-direction integration
+  function initMarqueeScrollDirection() {
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
       console.warn('Marquee: GSAP/ScrollTrigger missing');
       return;
@@ -692,7 +692,7 @@
 
       tl.fromTo(marqueeScroll, { x: `${scrollStart}vw` }, { x: `${scrollEnd}vw`, ease: 'none' });
     });
-  } */
+  }
 
   // About Visual Effects
   function initAboutVisualEffects() {
@@ -1071,7 +1071,7 @@
             initLenis();
             initWorkHover();
             initScrollEffects();
-            // initMarqueeScrollDirection();
+            initMarqueeScrollDirection();
             initAboutVisualEffects();
             initFAQEffects();
             initSliderSection();
@@ -1183,7 +1183,7 @@
     initLenis();
     initWorkHover();
     initScrollEffects();
-    // initMarqueeScrollDirection();
+    initMarqueeScrollDirection();
     initAboutVisualEffects();
     initFAQEffects();
             initSliderSection();
