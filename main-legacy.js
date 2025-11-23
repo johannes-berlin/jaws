@@ -999,13 +999,15 @@
   }
 
   // Barba Transitions Integration
+  // AUSKOMMENTIERT: Barba Page Transitions
+  /*
   function initBarbaTransitions() {
     if (typeof barba === 'undefined') {
       console.warn('Barba.js not loaded, skipping page transitions');
       return;
     }
 
-    /* ========= Helfer ========= */
+    // ========= Helfer =========
     function runScriptsIn(container) {
       // Alle <script>-Tags im neuen Container erneut ausführen (auch inline)
       $(container)
@@ -1020,7 +1022,7 @@
         });
     }
 
-    /* ========= Webflow/GSAP Reset ========= */
+    // ========= Webflow/GSAP Reset =========
     function reinitAfterSwap(data) {
       // 1) Neues data-wf-page übernehmen (wichtig für IX2)
       const dom = $(new DOMParser().parseFromString(data.next.html, "text/html"));
@@ -1084,7 +1086,7 @@
       });
     }
 
-    /* ========= Barba Hooks ========= */
+    // ========= Barba Hooks =========
     barba.hooks.enter((data) => {
       gsap.set(data.next.container, { position: "fixed", top: 0, left: 0, width: "100%" });
     });
@@ -1102,12 +1104,12 @@
       reinitAfterSwap(data);
     });
 
-    /* ========= Selektoren für Transition ========= */
+    // ========= Selektoren für Transition =========
     const TRANSITION_SEL = ".transition";
     const BG_SEL = ".transition_bg";
     const TEXTS_SEL = ".transition_contain [data-trans-text]";
 
-    /* ========= Barba Init: BG-Wipe + Text-Reveal ========= */
+    // ========= Barba Init: BG-Wipe + Text-Reveal =========
     barba.init({
       preventRunning: true,
       transitions: [
@@ -1171,6 +1173,7 @@
 
     console.log('JAWS: Barba transitions initialized!');
   }
+  */
 
   // Bunny Lightbox removed
 
@@ -1191,7 +1194,7 @@
     initHeaderAnimations();
     
     // Initialize Barba transitions
-    initBarbaTransitions();
+    // AUSKOMMENTIERT: initBarbaTransitions();
     
     console.log('JAWS: Animations initialized successfully!');
   }
